@@ -78,7 +78,7 @@ def main():
     while True:
         # 每天早上8点和晚上20点发送消息
         now = datetime.datetime.now(tz)
-        if (now.hour != 8 or now.minute != 0) and (now.hour != 20 or now.minute != 6):
+        if (now.hour != 8 or now.minute != 0) and (now.hour != 20 or now.minute != 0):
             time.sleep(1)
             continue
         tenant_access_token = get_access_token(app_id, app_secret)
