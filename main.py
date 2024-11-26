@@ -90,7 +90,8 @@ def main():
                     "date": datetime.datetime.fromtimestamp(int(user[1] / 1000), tz).strftime('%Y-%m-%d'),
                     "team": user[2][0]["text"]
                 }
-                print(send_message(tenant_access_token, user[0]["id"], message_info))
+                send_message(tenant_access_token, user[0]["id"], message_info)
+                send_admin_message(tenant_access_token, message_info)
         time.sleep(60)
 
 if __name__ == "__main__":
