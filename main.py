@@ -10,6 +10,7 @@ app_id = os.environ.get('APP_ID')
 app_secret = os.environ.get('APP_SECRET')
 app_token = os.environ.get('APP_TOKEN')
 table_id = os.environ.get('TABLE_ID')
+admin_chat_id = os.environ.get('ADMIN_CHAT_ID')
 
 def get_access_token(app_id, app_secret):
     url = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal/"
@@ -58,13 +59,26 @@ def send_message(tenant_access_token, user_id, message_info):
     response = requests.post(url, headers=headers, json=data)
     return response.json()
 
+def send_admin_message(tenant_access_token, message_info):
+    url = "https://open.feishu.cn/open-apis/im/v1/messages?receive_id_type=open_id"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {tenant_access_token}"
+    }
+    card_body = "{\"type\":\"template\",\"data\":{\"template_id\":\"AAqjHFTuPWC3T\",\"template_version_name\":\"1.0.1\",\"template_variable\":{\"person\":\"" + message_info["person"] + "\",\"date\":\"" + message_info["date"] + "\",\"team\":\"" + message_info["team"] + "\"}}}"
+    data = {
+        "receive_id": admin_chat_id,
+        "content": card_body,
+        "msg_type": "interactive"
+    }
+    response = requests.post(url, headers=headers, json=data)
+    return response.json()
 
 def main():
     while True:
         # 每天早上8点和晚上20点发送消息
         now = datetime.datetime.now(tz)
-        if (now.hour != 8 or now.minute != 0) and (now.hour != 20 or now.minute != 0):
-            print(f"当前时间：{now.strftime('%Y-%m-%d %H:%M:%S')}")
+        if (now.hour != 0 or now.minute != 0) and (now.hour != 20 or now.minute != 0):
             time.sleep(1)
             continue
         tenant_access_token = get_access_token(app_id, app_secret)
