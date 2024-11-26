@@ -60,7 +60,7 @@ def send_message(tenant_access_token, user_id, message_info):
     return response.json()
 
 def send_admin_message(tenant_access_token, message_info):
-    url = "https://open.feishu.cn/open-apis/im/v1/messages?receive_id_type=open_id"
+    url = "https://open.feishu.cn/open-apis/im/v1/messages?receive_id_type=chat_id"
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {tenant_access_token}"
