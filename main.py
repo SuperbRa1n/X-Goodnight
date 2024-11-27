@@ -78,14 +78,16 @@ def main():
     while True:
         # 每天早上8点和晚上20点发送消息
         now = datetime.datetime.now(tz)
-        if (now.hour != 8 or now.minute != 0) and (now.hour != 21 or now.minute != 30):
+        if (now.hour != 8 or now.minute != 0) and (now.hour != 21 or now.minute != 40):
             print(f"当前时间：{now.strftime('%Y-%m-%d %H:%M:%S')}")
             time.sleep(1)
             continue
         tenant_access_token = get_access_token(app_id, app_secret)
         user_info = get_user_info(tenant_access_token, app_token, table_id)
+        print(f"获取到的用户信息：{user_info}")
         for user in user_info:
             if user[1] < int(time.time() * 1000) and user[1] > int((time.time() - 86400) * 1000):
+                print(f"当前时间：{now.strftime('%Y-%m-%d %H:%M:%S')}，用户信息：{user}")
                 message_info = {
                     "person": user[0]["name"],
                     "date": datetime.datetime.fromtimestamp(int(user[1] / 1000), tz).strftime('%Y-%m-%d'),
