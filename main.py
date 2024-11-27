@@ -12,6 +12,12 @@ app_token = os.environ.get('APP_TOKEN')
 table_id = os.environ.get('TABLE_ID')
 admin_chat_id = os.environ.get('ADMIN_CHAT_ID')
 
+app_id = "cli_a58d5eca27bf100d"
+app_secret = "05bW6O9WwfCQQV5bRMHIYbqhQwzVzLFL"
+
+app_token = "WuL7bBxbOabo2asJOIqcxcJzn0b"
+table_id = "tblRCTlPm8RC3Yvo"
+
 def get_access_token(app_id, app_secret):
     url = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal/"
     headers = {
@@ -37,6 +43,8 @@ def get_user_info(tenant_access_token, app_token, table_id):
         response = requests.post(url + f"&page_token={next_page_token}", headers=headers, json={}).json()
         res_data['items'] += response.get('data').get('items')
         res_data['has_more'] = response.get('data').get('has_more')
+        res_data['page_token'] = response.get('data').get('page_token')
+    if res_data.get('items'):
         info_list = []
         for user in res_data['items']:
             fields = user.get('fields')
@@ -78,13 +86,12 @@ def main():
     while True:
         # 每天早上8点和晚上20点发送消息
         now = datetime.datetime.now(tz)
-        if (now.hour != 8 or now.minute != 0) and (now.hour != 21 or now.minute != 40):
+        if (now.hour != 8 or now.minute != 0) and (now.hour != 22 or now.minute != 00):
             print(f"当前时间：{now.strftime('%Y-%m-%d %H:%M:%S')}")
             time.sleep(1)
             continue
         tenant_access_token = get_access_token(app_id, app_secret)
         user_info = get_user_info(tenant_access_token, app_token, table_id)
-        print(f"获取到的用户信息：{user_info}")
         for user in user_info:
             if user[1] < int(time.time() * 1000) and user[1] > int((time.time() - 86400) * 1000):
                 print(f"当前时间：{now.strftime('%Y-%m-%d %H:%M:%S')}，用户信息：{user}")
