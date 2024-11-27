@@ -78,7 +78,8 @@ def main():
     while True:
         # 每天早上8点和晚上20点发送消息
         now = datetime.datetime.now(tz)
-        if (now.hour != 8 or now.minute != 0) and (now.hour != 20 or now.minute != 0):
+        if (now.hour != 8 or now.minute != 0) and (now.hour != 21 or now.minute != 30):
+            print(f"当前时间：{now.strftime('%Y-%m-%d %H:%M:%S')}")
             time.sleep(1)
             continue
         tenant_access_token = get_access_token(app_id, app_secret)
@@ -90,6 +91,7 @@ def main():
                     "date": datetime.datetime.fromtimestamp(int(user[1] / 1000), tz).strftime('%Y-%m-%d'),
                     "team": user[2][0]["text"]
                 }
+                print(f"发送消息给{message_info['person']}，日期：{message_info['date']}，部门：{message_info['team']}")
                 send_message(tenant_access_token, user[0]["id"], message_info)
                 send_admin_message(tenant_access_token, message_info)
         time.sleep(60)
